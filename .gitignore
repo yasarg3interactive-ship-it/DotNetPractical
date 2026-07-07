@@ -1,0 +1,22 @@
+# .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+TestResults/
+*.trx
+
+# Node
+node_modules/
+dist/
+build/
+
+# Editor
+.vscode/
+
+# Local secrets
+appsettings.Local.json
+appsettings.*.local.json
+.env
+.env.*

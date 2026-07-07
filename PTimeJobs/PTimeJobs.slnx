@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PTimeJobs.Api/PTimeJobs.Api.csproj" />
+    <Project Path="src/PTimeJobs.Application/PTimeJobs.Application.csproj" />
+    <Project Path="src/PTimeJobs.Domain/PTimeJobs.Domain.csproj" />
+    <Project Path="src/PTimeJobs.Infrastructure/PTimeJobs.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PTimeJobs.Tests/PTimeJobs.Tests.csproj" />
+  </Folder>
+</Solution>

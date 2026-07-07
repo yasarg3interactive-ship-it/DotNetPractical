@@ -1,0 +1,21 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS citext;
+CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION IF NOT EXISTS vector;
+
+CREATE TYPE account_status AS ENUM ('pending', 'active', 'suspended', 'deactivated', 'deleted');
+CREATE TYPE verification_channel AS ENUM ('email', 'mobile', 'document', 'business', 'address');
+CREATE TYPE verification_status AS ENUM ('pending', 'verified', 'failed', 'expired', 'revoked');
+CREATE TYPE session_status AS ENUM ('active', 'revoked', 'expired');
+CREATE TYPE employment_type AS ENUM ('full_time', 'part_time', 'temporary', 'contract', 'internship');
+CREATE TYPE salary_model AS ENUM ('hourly', 'daily', 'weekly', 'monthly', 'fixed', 'commission');
+CREATE TYPE job_status AS ENUM ('draft', 'open', 'paused', 'closed', 'filled', 'cancelled');
+CREATE TYPE application_status AS ENUM ('submitted', 'reviewing', 'shortlisted', 'interview', 'offered', 'hired', 'rejected', 'withdrawn');
+CREATE TYPE contract_status AS ENUM ('draft', 'active', 'completed', 'cancelled', 'terminated');
+CREATE TYPE booking_status AS ENUM ('requested', 'confirmed', 'checked_in', 'completed', 'cancelled', 'rejected');
+CREATE TYPE payment_status AS ENUM ('pending', 'authorized', 'paid', 'failed', 'refunded', 'cancelled');
+CREATE TYPE subscription_status AS ENUM ('trialing', 'active', 'past_due', 'cancelled', 'expired');
+CREATE TYPE notification_status AS ENUM ('queued', 'sent', 'read', 'failed');
+CREATE TYPE conversation_type AS ENUM ('worker_employer', 'worker_accommodation', 'worker_food', 'support', 'system');
+CREATE TYPE review_status AS ENUM ('published', 'hidden', 'flagged', 'removed');
+CREATE TYPE complaint_status AS ENUM ('open', 'in_review', 'resolved', 'rejected', 'escalated');
