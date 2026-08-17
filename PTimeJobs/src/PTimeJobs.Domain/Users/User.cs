@@ -66,4 +66,35 @@ public sealed class User
         Status = AccountStatus.Active;
         UpdatedAt = DateTimeOffset.UtcNow;
     }
+
+    public void Suspend()
+    {
+        Status = AccountStatus.Suspended;
+        UpdatedAt = DateTimeOffset.UtcNow;
+    }
+
+    public bool IsLockedOut()
+    {
+        return LockedUntil.HasValue && LockedUntil.Value > DateTimeOffset.UtcNow;
+    }
+
+    public void RecordSuccessfulLogin()
+    {
+        LastLoginAt = DateTimeOffset.UtcNow;
+        LastActiveAt = DateTimeOffset.UtcNow;
+        FailedLoginCount = 0;
+        LockedUntil = null;
+        UpdatedAt = DateTimeOffset.UtcNow;
+    }
+
+    public void RecordFailedLogin()
+    {
+        FailedLoginCount++;
+        if (FailedLoginCount >= 5)
+        {
+            LockedUntil = DateTimeOffset.UtcNow.AddMinutes(15);
+        }
+
+        UpdatedAt = DateTimeOffset.UtcNow;
+    }
 }

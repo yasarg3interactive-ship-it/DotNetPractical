@@ -14,4 +14,15 @@ public sealed class UserRole
 
     public User User { get; private set; } = null!;
     public Role Role { get; private set; } = null!;
+
+    public static UserRole Create(Guid userId, Guid roleId, Guid? assignedBy = null)
+    {
+        return new UserRole
+        {
+            UserId = userId,
+            RoleId = roleId,
+            AssignedBy = assignedBy,
+            AssignedAt = DateTimeOffset.UtcNow
+        };
+    }
 }

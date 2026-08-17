@@ -10,10 +10,14 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     public DbSet<User> Users => Set<User>();
     public DbSet<Role> Roles => Set<Role>();
     public DbSet<UserRole> UserRoles => Set<UserRole>();
+    public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
+    public DbSet<UserSession> UserSessions => Set<UserSession>();
 
     IQueryable<User> IApplicationDbContext.Users => Users;
     IQueryable<Role> IApplicationDbContext.Roles => Roles;
     IQueryable<UserRole> IApplicationDbContext.UserRoles => UserRoles;
+    IQueryable<UserProfile> IApplicationDbContext.UserProfiles => UserProfiles;
+    IQueryable<UserSession> IApplicationDbContext.UserSessions => UserSessions;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

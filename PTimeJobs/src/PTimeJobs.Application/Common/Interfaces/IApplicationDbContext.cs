@@ -7,6 +7,8 @@ public interface IApplicationDbContext
     IQueryable<User> Users { get; }
     IQueryable<Role> Roles { get; }
     IQueryable<UserRole> UserRoles { get; }
+    IQueryable<UserProfile> UserProfiles { get; }
+    IQueryable<UserSession> UserSessions { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
