@@ -6,9 +6,17 @@ using PTimeJobs.Application.Common.Interfaces;
 using PTimeJobs.Infrastructure.Persistence;
 using PTimeJobs.Infrastructure.Persistence.Repositories;
 using PTimeJobs.Infrastructure.Services;
+using PTimeJobs.Application.Employers.Interfaces;
+using PTimeJobs.Application.Jobs.Interfaces;
+using PTimeJobs.Application.Locations.Interfaces;
 using PTimeJobs.Application.Users.Interfaces;
+using PTimeJobs.Application.Workers.Interfaces;
 using PTimeJobs.Domain.Users;
+using PTimeJobs.Infrastructure.Employers;
+using PTimeJobs.Infrastructure.Jobs;
+using PTimeJobs.Infrastructure.Locations;
 using PTimeJobs.Infrastructure.Users;
+using PTimeJobs.Infrastructure.Workers;
 
 namespace PTimeJobs.Infrastructure;
 
@@ -48,6 +56,17 @@ public static class DependencyInjection
             provider.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<IDatabaseConnectionChecker, DatabaseConnectionChecker>();
         services.AddScoped<IUserQueryService, UserQueryService>();
+        services.AddScoped<IJobQueryService, JobQueryService>();
+        services.AddScoped<IJobCommandService, JobCommandService>();
+        services.AddScoped<IJobApplicationQueryService, JobApplicationQueryService>();
+        services.AddScoped<IJobApplicationCommandService, JobApplicationCommandService>();
+        services.AddScoped<ILocationsQueryService, LocationsQueryService>();
+        services.AddScoped<ILocationsCommandService, LocationsCommandService>();
+        services.AddScoped<ISkillsService, SkillsService>();
+        services.AddScoped<IWorkerProfileQueryService, WorkerProfileQueryService>();
+        services.AddScoped<IWorkerProfileCommandService, WorkerProfileCommandService>();
+        services.AddScoped<IEmployerProfileQueryService, EmployerProfileQueryService>();
+        services.AddScoped<IEmployerProfileCommandService, EmployerProfileCommandService>();
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
