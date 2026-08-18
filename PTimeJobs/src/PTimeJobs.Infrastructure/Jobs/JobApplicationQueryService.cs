@@ -72,4 +72,36 @@ public sealed class JobApplicationQueryService(ApplicationDbContext dbContext) :
 
         return new PagedResult<JobApplicationResponse>(items, page, pageSize, totalCount);
     }
+
+    public async Task<IReadOnlyCollection<HiringStatusHistoryResponse>> GetHistoryAsync(Guid applicationId, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.HiringStatusHistories
+            .AsNoTracking()
+            .Where(history => history.ApplicationId == applicationId)
+            .OrderByDescending(history => history.CreatedAt)
+            .Select(history => new HiringStatusHistoryResponse(
+                history.HiringStatusHistoryId,
+                history.ApplicationId,
+                history.OldStatus != null ? history.OldStatus.ToString() : null,
+                history.NewStatus.ToString(),
+                history.ChangedBy,
+                history.Reason,
+                history.CreatedAt))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<ShortlistResponse>> GetShortlistsAsync(Guid applicationId, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Shortlists
+            .AsNoTracking()
+            .Where(shortlist => shortlist.ApplicationId == applicationId)
+            .OrderByDescending(shortlist => shortlist.CreatedAt)
+            .Select(shortlist => new ShortlistResponse(
+                shortlist.ShortlistId,
+                shortlist.ApplicationId,
+                shortlist.ShortlistedBy,
+                shortlist.Notes,
+                shortlist.CreatedAt))
+            .ToListAsync(cancellationToken);
+    }
 }

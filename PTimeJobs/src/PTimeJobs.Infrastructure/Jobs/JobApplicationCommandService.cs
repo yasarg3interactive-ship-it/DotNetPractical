@@ -73,9 +73,33 @@ public sealed class JobApplicationCommandService(
             return null;
         }
 
+        var oldStatus = application.Status;
         application.ChangeStatus(statusValue);
+
+        // Record the transition for audit/history purposes.
+        var historyEntry = HiringStatusHistory.Create(applicationId, oldStatus, statusValue);
+        dbContext.HiringStatusHistories.Add(historyEntry);
+
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return await jobApplicationQueryService.GetByIdAsync(applicationId, cancellationToken);
+    }
+
+    public async Task<ShortlistResponse?> AddShortlistAsync(Guid applicationId, AddShortlistRequest request, CancellationToken cancellationToken = default)
+    {
+        var applicationExists = await dbContext.JobApplications
+            .AsNoTracking()
+            .AnyAsync(a => a.ApplicationId == applicationId, cancellationToken);
+
+        if (!applicationExists)
+        {
+            return null;
+        }
+
+        var shortlist = Shortlist.Create(applicationId, request.ShortlistedBy, request.Notes);
+        dbContext.Shortlists.Add(shortlist);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return new ShortlistResponse(shortlist.ShortlistId, shortlist.ApplicationId, shortlist.ShortlistedBy, shortlist.Notes, shortlist.CreatedAt);
     }
 }

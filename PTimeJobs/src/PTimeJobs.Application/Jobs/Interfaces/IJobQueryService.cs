@@ -14,4 +14,10 @@ public interface IJobQueryService
         int page,
         int pageSize,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<JobLocationResponse>> GetLocationsAsync(Guid jobId, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<JobScheduleResponse>> GetSchedulesAsync(Guid jobId, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<JobSkillResponse>> GetSkillsAsync(Guid jobId, CancellationToken cancellationToken = default);
 }

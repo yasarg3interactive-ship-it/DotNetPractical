@@ -13,4 +13,8 @@ public interface IJobApplicationQueryService
         int page,
         int pageSize,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<HiringStatusHistoryResponse>> GetHistoryAsync(Guid applicationId, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<ShortlistResponse>> GetShortlistsAsync(Guid applicationId, CancellationToken cancellationToken = default);
 }

@@ -86,4 +86,88 @@ public sealed class JobCommandService(ApplicationDbContext dbContext, IJobQueryS
 
         return await jobQueryService.GetByIdAsync(jobId, cancellationToken);
     }
+
+    public async Task<JobLocationResponse?> AddLocationAsync(Guid jobId, AddJobLocationRequest request, CancellationToken cancellationToken = default)
+    {
+        var jobExists = await dbContext.Jobs.AsNoTracking().AnyAsync(job => job.JobId == jobId, cancellationToken);
+        if (!jobExists)
+        {
+            return null;
+        }
+
+        var jobLocation = JobLocation.Create(jobId, request.LocationId, request.Latitude, request.Longitude, request.IsRemoteAllowed);
+        dbContext.JobLocations.Add(jobLocation);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return new JobLocationResponse(
+            jobLocation.JobLocationId,
+            jobLocation.JobId,
+            jobLocation.LocationId,
+            jobLocation.Latitude,
+            jobLocation.Longitude,
+            jobLocation.IsRemoteAllowed);
+    }
+
+    public async Task<JobScheduleResponse?> AddScheduleAsync(Guid jobId, AddJobScheduleRequest request, CancellationToken cancellationToken = default)
+    {
+        var jobExists = await dbContext.Jobs.AsNoTracking().AnyAsync(job => job.JobId == jobId, cancellationToken);
+        if (!jobExists)
+        {
+            return null;
+        }
+
+        var schedule = JobSchedule.Create(
+            jobId,
+            request.DayOfWeek,
+            request.StartTime,
+            request.EndTime,
+            request.StartDate,
+            request.EndDate,
+            request.ShiftLabel,
+            request.RequiredWorkers);
+
+        dbContext.JobSchedules.Add(schedule);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return new JobScheduleResponse(
+            schedule.JobScheduleId,
+            schedule.JobId,
+            schedule.DayOfWeek,
+            schedule.StartTime,
+            schedule.EndTime,
+            schedule.StartDate,
+            schedule.EndDate,
+            schedule.ShiftLabel,
+            schedule.RequiredWorkers);
+    }
+
+    public async Task<JobSkillResponse?> AddSkillAsync(Guid jobId, AddJobSkillRequest request, CancellationToken cancellationToken = default)
+    {
+        var jobExists = await dbContext.Jobs.AsNoTracking().AnyAsync(job => job.JobId == jobId, cancellationToken);
+        if (!jobExists)
+        {
+            return null;
+        }
+
+        var skill = await dbContext.Skills.AsNoTracking().FirstOrDefaultAsync(s => s.SkillId == request.SkillId, cancellationToken);
+        if (skill is null)
+        {
+            throw new InvalidOperationException("Skill not found.");
+        }
+
+        var alreadyAdded = await dbContext.JobSkills
+            .AsNoTracking()
+            .AnyAsync(js => js.JobId == jobId && js.SkillId == request.SkillId, cancellationToken);
+
+        if (alreadyAdded)
+        {
+            throw new InvalidOperationException("This skill is already required for this job.");
+        }
+
+        var jobSkill = JobSkill.Create(jobId, request.SkillId, request.RequiredLevel, request.IsMandatory);
+        dbContext.JobSkills.Add(jobSkill);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return new JobSkillResponse(jobSkill.JobId, jobSkill.SkillId, skill.SkillName, jobSkill.RequiredLevel, jobSkill.IsMandatory);
+    }
 }

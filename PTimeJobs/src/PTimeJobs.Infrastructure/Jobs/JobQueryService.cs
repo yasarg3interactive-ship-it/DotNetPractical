@@ -97,4 +97,47 @@ public sealed class JobQueryService(ApplicationDbContext dbContext) : IJobQueryS
 
         return new PagedResult<JobSummaryResponse>(items, page, pageSize, totalCount);
     }
+
+    public async Task<IReadOnlyCollection<JobLocationResponse>> GetLocationsAsync(Guid jobId, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.JobLocations
+            .AsNoTracking()
+            .Where(location => location.JobId == jobId)
+            .Select(location => new JobLocationResponse(
+                location.JobLocationId,
+                location.JobId,
+                location.LocationId,
+                location.Latitude,
+                location.Longitude,
+                location.IsRemoteAllowed))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<JobScheduleResponse>> GetSchedulesAsync(Guid jobId, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.JobSchedules
+            .AsNoTracking()
+            .Where(schedule => schedule.JobId == jobId)
+            .Select(schedule => new JobScheduleResponse(
+                schedule.JobScheduleId,
+                schedule.JobId,
+                schedule.DayOfWeek,
+                schedule.StartTime,
+                schedule.EndTime,
+                schedule.StartDate,
+                schedule.EndDate,
+                schedule.ShiftLabel,
+                schedule.RequiredWorkers))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<JobSkillResponse>> GetSkillsAsync(Guid jobId, CancellationToken cancellationToken = default)
+    {
+        return await (
+            from jobSkill in dbContext.JobSkills.AsNoTracking()
+            where jobSkill.JobId == jobId
+            join skill in dbContext.Skills.AsNoTracking() on jobSkill.SkillId equals skill.SkillId
+            select new JobSkillResponse(jobSkill.JobId, jobSkill.SkillId, skill.SkillName, jobSkill.RequiredLevel, jobSkill.IsMandatory))
+            .ToListAsync(cancellationToken);
+    }
 }

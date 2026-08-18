@@ -9,4 +9,10 @@ public interface IJobCommandService
     Task<JobDetailResponse?> PublishAsync(Guid jobId, CancellationToken cancellationToken = default);
 
     Task<JobDetailResponse?> CloseAsync(Guid jobId, CancellationToken cancellationToken = default);
+
+    Task<JobLocationResponse?> AddLocationAsync(Guid jobId, AddJobLocationRequest request, CancellationToken cancellationToken = default);
+
+    Task<JobScheduleResponse?> AddScheduleAsync(Guid jobId, AddJobScheduleRequest request, CancellationToken cancellationToken = default);
+
+    Task<JobSkillResponse?> AddSkillAsync(Guid jobId, AddJobSkillRequest request, CancellationToken cancellationToken = default);
 }

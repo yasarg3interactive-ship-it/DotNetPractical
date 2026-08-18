@@ -70,4 +70,35 @@ public sealed class JobApplicationsController(
 
         return Ok(ApiResponse<JobApplicationResponse>.Success(application, "Application status updated."));
     }
+
+    [HttpGet("{applicationId:guid}/history")]
+    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<HiringStatusHistoryResponse>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetHistory(Guid applicationId, CancellationToken cancellationToken)
+    {
+        var history = await jobApplicationQueryService.GetHistoryAsync(applicationId, cancellationToken);
+        return Ok(ApiResponse<IReadOnlyCollection<HiringStatusHistoryResponse>>.Success(history));
+    }
+
+    [HttpGet("{applicationId:guid}/shortlist")]
+    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<ShortlistResponse>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetShortlists(Guid applicationId, CancellationToken cancellationToken)
+    {
+        var shortlists = await jobApplicationQueryService.GetShortlistsAsync(applicationId, cancellationToken);
+        return Ok(ApiResponse<IReadOnlyCollection<ShortlistResponse>>.Success(shortlists));
+    }
+
+    [HttpPost("{applicationId:guid}/shortlist")]
+    [ProducesResponseType(typeof(ApiResponse<ShortlistResponse>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<ShortlistResponse>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddShortlist(Guid applicationId, [FromBody] AddShortlistRequest request, CancellationToken cancellationToken)
+    {
+        var shortlist = await jobApplicationCommandService.AddShortlistAsync(applicationId, request, cancellationToken);
+
+        if (shortlist is null)
+        {
+            return NotFound(ApiResponse<ShortlistResponse>.Failure("Application not found."));
+        }
+
+        return CreatedAtAction(nameof(GetShortlists), new { applicationId }, ApiResponse<ShortlistResponse>.Success(shortlist, "Shortlisted."));
+    }
 }
