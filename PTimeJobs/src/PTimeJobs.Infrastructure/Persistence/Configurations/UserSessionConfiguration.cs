@@ -17,10 +17,7 @@ public sealed class UserSessionConfiguration : IEntityTypeConfiguration<UserSess
         builder.Property(session => session.RefreshTokenHash).HasColumnName("refresh_token_hash");
         builder.Property(session => session.Status)
             .HasColumnName("status")
-            .HasColumnType("session_status")
-            .HasConversion(
-                status => status.ToString().ToLowerInvariant(),
-                value => Enum.Parse<SessionStatus>(value, true));
+            .HasColumnType("session_status");
         builder.Property(session => session.IpAddress).HasColumnName("ip_address").HasColumnType("inet");
         builder.Property(session => session.UserAgent).HasColumnName("user_agent");
         builder.Property(session => session.DeviceId).HasColumnName("device_id").HasMaxLength(120);

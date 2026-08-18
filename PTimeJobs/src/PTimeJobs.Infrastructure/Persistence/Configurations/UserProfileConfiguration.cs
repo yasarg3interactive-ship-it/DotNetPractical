@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PTimeJobs.Domain.Locations;
 using PTimeJobs.Domain.Users;
 
 namespace PTimeJobs.Infrastructure.Persistence.Configurations;
@@ -29,5 +30,9 @@ public sealed class UserProfileConfiguration : IEntityTypeConfiguration<UserProf
         builder.HasOne<User>()
             .WithOne()
             .HasForeignKey<UserProfile>(profile => profile.UserId);
+
+        builder.HasOne<Location>()
+            .WithMany()
+            .HasForeignKey(profile => profile.DefaultLocationId);
     }
 }

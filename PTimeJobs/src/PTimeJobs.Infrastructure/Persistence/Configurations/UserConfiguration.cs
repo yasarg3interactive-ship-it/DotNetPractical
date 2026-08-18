@@ -18,10 +18,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(user => user.PasswordHash).HasColumnName("password_hash");
         builder.Property(user => user.Status)
             .HasColumnName("status")
-            .HasColumnType("account_status")
-            .HasConversion(
-                status => status.ToString().ToLowerInvariant(),
-                value => Enum.Parse<AccountStatus>(value, true));
+            .HasColumnType("account_status");
         builder.Property(user => user.IsEmailVerified).HasColumnName("is_email_verified");
         builder.Property(user => user.IsMobileVerified).HasColumnName("is_mobile_verified");
         builder.Property(user => user.LastLoginAt).HasColumnName("last_login_at");
