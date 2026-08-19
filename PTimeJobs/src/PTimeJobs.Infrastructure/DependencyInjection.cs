@@ -109,6 +109,11 @@ public static class DependencyInjection
         services.AddScoped<IWorkerProfileCommandService, WorkerProfileCommandService>();
         services.AddScoped<IEmployerProfileQueryService, EmployerProfileQueryService>();
         services.AddScoped<IEmployerProfileCommandService, EmployerProfileCommandService>();
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUserProfilesService, UserProfilesService>();
+        services.AddScoped<ISessionsService, SessionsService>();
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
